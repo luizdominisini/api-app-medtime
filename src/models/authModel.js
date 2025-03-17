@@ -1,44 +1,77 @@
-import prisma from "../config/database.js";
 import jwt from "jsonwebtoken";
+import prisma from "../config/database.js";
 
 class AuthModel {
-  createUser = async (usuario) => {
-    usuario.dataNascimento = new Date(usuario.dataNascimento);
-    const user = await prisma.user.create({ data: usuario });
-    return user;
-  };
-
-  listUsers = async () => {
-    return prisma.user.findMany();
-  };
-
-  login = async (dadosLogin) => {
-    const user = await prisma.user.findUnique({
-      where: { email: dadosLogin.email },
-    });
-
-    if (!user) {
-      throw new Error("Email não cadastrado");
-    }
-
-    const token = jwt.sign(
-      {
-        id: user.id,
-        nome: user.nome,
-        email: user.email,
-        dataNascimento: user.dataNascimento,
-      },
-      "CH4V3S3CR3T4",
-      {
-        expiresIn: 300,
+  createUser = async (usuario, res) => {
+    try {
+      usuario.dataNascimento = new Date(usuario.dataNascimento);
+      const userExist = await prisma.user.findUnique({
+        where: { email: usuario.email },
+      });
+      if (userExist) {
+        return res.status(400).json({ mensagem: "Usuário já cadastrado" });
       }
-    );
 
-    if (!token) {
-      throw new Error("Erro com o token");
+      await prisma.user.create({ data: usuario });
+
+      return res
+        .status(201)
+        .json({ mensagem: "Usuário cadastrado com sucesso" });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ mensagem: "Erro no servidor", detalhe: error.mensagem });
     }
+  };
 
-    return { auth: true, token: token };
+  listUsers = async (res) => {
+    try {
+      
+      const users = await prisma.user.findMany();
+      if (!users) {
+        return res.status(404).json({ mensagem: "Nenhum usuário encontrado" });
+      }
+      return res.status(200).json({ users });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ mensagem: "Erro no servidor", detalhe: error.mensagem });
+    }
+  };
+
+  login = async (dadosLogin, res) => {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { email: dadosLogin.email },
+      });
+
+      if (!user) {
+        return res.status(404).json({ mensagem: "Usuário não encontrado" });
+      }
+
+      const token = jwt.sign(
+        {
+          id: user.id,
+          nome: user.nome,
+          email: user.email,
+          dataNascimento: user.dataNascimento,
+        },
+        "CH4V3S3CR3T4",
+        {
+          expiresIn: 300,
+        }
+      );
+
+      if (!token) {
+        return res.status(400).json({ mensagem: "Erro ao assinar token" });
+      }
+
+      return res.status(200).json({ token: token });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ mensagem: "Erro no servidor", detalhe: error.mensagem });
+    }
   };
 }
 

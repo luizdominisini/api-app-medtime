@@ -4,15 +4,15 @@ const authModel = new AuthModel();
 
 class AuthControler {
   createUser = async (req, res) => {
-    await authModel.createUser(req.body, res);
+    return authModel.createUser(req.body, res);
   };
 
   listUsers = async (req, res) => {
-    await authModel.listUsers(res);
+    return authModel.listUsers(res);
   };
 
   login = async (req, res) => {
-    await authModel.login(req.body, res);
+    return authModel.login(req.body, res);
   };
 }
 

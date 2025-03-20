@@ -9,5 +9,8 @@ const authController = new AuthControler();
 router.post("/auth/cadastrar", authController.createUser);
 router.get("/auth/listar", verifyToken, authController.listUsers);
 router.post("/auth/login", authController.login);
+router.get("/auth/verify-token", verifyToken, (req, res) => {
+  res.status(200).json({ auth: true, message: "Token verificado" });
+});
 
 export default router;

@@ -9,10 +9,12 @@ export const verifyToken = async (req, res, next) => {
 
     jwt.verify(token, "CH4V3S3CR3T4", (err, decoded) => {
       if (err) {
-        return res.status(401).json({
-          mensagem: "Verificação do token falhou",
-          error: err.expiredAt,
-        });
+        if (err.name === "TokenExpiredError") {
+          return res
+            .status(401)
+            .json({ auth: false, message: "Token expirado" });
+        }
+        return res.status(401).json({ auth: false, message: "Token inválido" });
       }
       req.user = decoded;
       next();

@@ -16,7 +16,7 @@ class AuthModel {
 
       return res
         .status(201)
-        .json({ mensagem: "Usuário cadastrado com sucesso" });
+        .json({ mensagem: "Usuário cadastrado com sucesso", sucesso: true });
     } catch (error) {
       return res
         .status(500)
@@ -26,7 +26,6 @@ class AuthModel {
 
   listUsers = async (res) => {
     try {
-      
       const users = await prisma.user.findMany();
       if (!users) {
         return res.status(404).json({ mensagem: "Nenhum usuário encontrado" });
@@ -49,6 +48,10 @@ class AuthModel {
         return res.status(404).json({ mensagem: "Usuário não encontrado" });
       }
 
+      if (dadosLogin.senha != user.senha) {
+        return res.status(403).json({ mensagem: "Senha incorreta" });
+      }
+
       const token = jwt.sign(
         {
           id: user.id,
@@ -58,7 +61,7 @@ class AuthModel {
         },
         "CH4V3S3CR3T4",
         {
-          expiresIn: 300,
+          expiresIn: 30,
         }
       );
 

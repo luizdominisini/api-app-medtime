@@ -12,5 +12,6 @@ router.post("/auth/login", authController.login);
 router.get("/auth/verify-token", verifyToken, (req, res) => {
   res.status(200).json({ auth: true, message: "Token verificado" });
 });
+router.delete('/auth/deletar', verifyToken, authController.deleteUser)
 
 export default router;

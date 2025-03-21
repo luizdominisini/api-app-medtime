@@ -14,6 +14,10 @@ class AuthControler {
   login = async (req, res) => {
     return authModel.login(req.body, res);
   };
+
+  deleteUser = async (req, res) => {
+    return authModel.deleteUser(req, res);
+  };
 }
 
 export default AuthControler;

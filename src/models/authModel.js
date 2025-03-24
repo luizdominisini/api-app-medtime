@@ -8,6 +8,7 @@ class AuthModel {
       const userExist = await prisma.user.findUnique({
         where: { email: usuario.email },
       });
+
       if (userExist) {
         return res.status(400).json({ message: "Usuário já cadastrado" });
       }
@@ -61,7 +62,7 @@ class AuthModel {
         },
         "CH4V3S3CR3T4",
         {
-          expiresIn: 30,
+          expiresIn: 1000,
         }
       );
 

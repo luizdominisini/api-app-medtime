@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import prisma from "../config/database.js";
 
 class AuthModel {
-  createUser = async (usuario, res) => {
+  cadastrarUsuario = async (usuario, res) => {
     try {
       usuario.dataNascimento = new Date(usuario.dataNascimento);
       const userExist = await prisma.user.findUnique({
@@ -10,7 +10,9 @@ class AuthModel {
       });
 
       if (userExist) {
-        return res.status(400).json({ message: "Usuário já cadastrado" });
+        return res
+          .status(400)
+          .json({ message: "Usuário já cadastrado", sucess: false });
       }
 
       await prisma.user.create({ data: usuario });
@@ -25,12 +27,16 @@ class AuthModel {
     }
   };
 
-  listUsers = async (res) => {
+  listarUsuario = async (res) => {
     try {
       const users = await prisma.user.findMany();
+
       if (!users) {
-        return res.status(404).json({ message: "Nenhum usuário encontrado" });
+        return res
+          .status(404)
+          .json({ message: "Nenhum usuário encontrado", sucess: false });
       }
+
       return res.status(200).json({ users });
     } catch (error) {
       return res
@@ -46,11 +52,15 @@ class AuthModel {
       });
 
       if (!user) {
-        return res.status(404).json({ message: "Usuário não encontrado" });
+        return res
+          .status(404)
+          .json({ message: "Usuário não encontrado", sucess: false });
       }
 
       if (dadosLogin.senha != user.senha) {
-        return res.status(403).json({ message: "Senha incorreta" });
+        return res
+          .status(403)
+          .json({ message: "Senha incorreta", sucess: false });
       }
 
       const token = jwt.sign(
@@ -67,10 +77,12 @@ class AuthModel {
       );
 
       if (!token) {
-        return res.status(400).json({ message: "Erro ao assinar token" });
+        return res
+          .status(400)
+          .json({ message: "Erro ao assinar token", sucess: false });
       }
 
-      return res.status(200).json({ token: token });
+      return res.status(200).json({ token: token, sucess: true });
     } catch (error) {
       return res
         .status(500)
@@ -78,7 +90,7 @@ class AuthModel {
     }
   };
 
-  deleteUser = async (req, res) => {
+  deletarUsuario = async (req, res) => {
     try {
       const { user_id } = req.body;
       const user = await prisma.user.findUnique({ where: { id: user_id } });

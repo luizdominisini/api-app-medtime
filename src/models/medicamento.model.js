@@ -1,15 +1,19 @@
 import prisma from "../config/database.js";
 
 class MedicamentosModel {
-  createMedicamento = async (medicamento, res) => {
+  cadastrarMedicamento = async (medicamento, res) => {
     try {
       const medicamentoCriado = await prisma.medicamentos.create({
         data: medicamento,
       });
       if (!medicamento) {
-        return res.status(400).json({ message: "Erro ao criar medicamento" });
+        return res
+          .status(400)
+          .json({ message: "Erro ao criar medicamento", sucess: false });
       }
-      return res.status(201).json({ medicamentoCriado });
+      return res
+        .status(201)
+        .json({ message: "Medicamento criado", sucess: true });
     } catch (error) {
       return res
         .status(500)
@@ -17,11 +21,13 @@ class MedicamentosModel {
     }
   };
 
-  listMedicamento = async (res) => {
+  listarMedicamento = async (res) => {
     try {
       const medicamentos = await prisma.medicamentos.findMany();
       if (!medicamentos) {
-        return res.status(400).json({ message: "Erro ao listar medicamento" });
+        return res
+          .status(400)
+          .json({ message: "Erro ao listar medicamento", sucess: false });
       }
       return res.status(201).json({ medicamentos });
     } catch (error) {
@@ -31,19 +37,22 @@ class MedicamentosModel {
     }
   };
 
-  deleteMedicamento = async (res, req) => {
+  deletarMedicamento = async (res, req) => {
     try {
       const medicamento = await prisma.medicamentos.findUnique({
         where: { id: req.body.id },
       });
       if (!medicamento) {
-        return res.status(400).json({ message: "Erro ao buscar medicamento" });
+        return res
+          .status(400)
+          .json({ message: "Erro ao buscar medicamento", sucess: false });
       }
 
       await prisma.medicamentos.delete({ where: { id: req.body.id } });
-      return res
-        .status(201)
-        .json({ sucesso: true, message: "Medicamento deletado" });
+      return res.status(201).json({
+        message: "Medicamento deletado",
+        sucess: false,
+      });
     } catch (error) {
       return res
         .status(500)

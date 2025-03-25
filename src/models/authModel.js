@@ -89,7 +89,7 @@ class AuthModel {
           .json({ message: "usuário não encontrado", sucess: false });
       }
 
-      const deletedUser = await prisma.user.delete({ where: { id: user.id } });
+      await prisma.user.delete({ where: { id: user.id } });
       return res
         .status(200)
         .json({ message: "Usuário deletado com sucesso", sucess: true });

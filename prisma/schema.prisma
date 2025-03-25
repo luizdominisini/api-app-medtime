@@ -17,3 +17,13 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
+
+model Medicamentos {
+  id Int @id @default(autoincrement())
+  nome String
+  descricao String
+  dosagem String
+  frequencia Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}

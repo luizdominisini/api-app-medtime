@@ -1,0 +1,10 @@
+-- CreateTable
+CREATE TABLE "Medicamentos" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "nome" TEXT NOT NULL,
+    "descricao" TEXT NOT NULL,
+    "dosagem" TEXT NOT NULL,
+    "frequencia" INTEGER NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

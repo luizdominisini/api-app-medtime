@@ -14,6 +14,10 @@ class MedicamentosController {
   deletarMedicamento(req, res) {
     return medicamentosModel.deletarMedicamento(res, req);
   }
+
+  atualizarMedicamento(req, res) {
+    return medicamentosModel.atualizarMedicamento(req, res);
+  }
 }
 
 export default MedicamentosController;

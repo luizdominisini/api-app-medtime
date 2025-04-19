@@ -59,6 +59,46 @@ class MedicamentosModel {
         .json({ message: "Erro no servidor", detalhe: error.message });
     }
   };
+
+  async atualizarMedicamento(req, res) {
+    try {
+      if (!req.body.id) {
+        return res
+          .status(400)
+          .json({ message: "Erro ao buscar medicamento", sucess: false });
+      }
+
+      const medicamento = await prisma.medicamentos.findUnique({
+        where: { id: req.body.id },
+      });
+
+      if (!medicamento) {
+        return res
+          .status(404)
+          .json({ message: "Medicamento não encontrado", sucess: false });
+      }
+
+      await prisma.medicamentos.update({
+        where: { id: req.body.id },
+        data: {
+          descricao: req.body.descricao,
+          dosagem: req.body.dosagem,
+          frequencia: req.body.frequencia,
+          nome: req.body.nome,
+        },
+      });
+
+      return res.status(200).json({
+        sucess: true,
+        message: "Medicamento atualizado",
+        medicamento: medicamento,
+      });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Erro no servidor", detalhe: error.message });
+    }
+  }
 }
 
 export default MedicamentosModel;

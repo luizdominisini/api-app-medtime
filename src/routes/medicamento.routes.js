@@ -17,5 +17,10 @@ router.delete(
   verifyToken,
   medicamentosController.deletarMedicamento
 );
+router.put(
+  "/atualizar",
+  verifyToken,
+  medicamentosController.atualizarMedicamento
+);
 
 export default router;
